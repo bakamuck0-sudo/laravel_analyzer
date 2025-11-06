@@ -36,6 +36,12 @@ class AnalyzeUrlJob implements ShouldQueue
                 'meta_description' => $description,
 
         ]);
-
+    }
+    public function update(): void
+    {
+        Schema::table('analyses', function (Blueprint $table) {
+            $table->text('h1_tags')->nullable();
+            $table->text('meta_description')->nullable();
+        });
     }
 }
