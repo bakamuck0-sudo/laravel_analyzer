@@ -13,7 +13,8 @@ class Analysis extends Model
         'status',
         'results',
         'h1_tags',
-        'meta_description'
+        'meta_description',
+        'status'
     ];
     protected function user()
     {
