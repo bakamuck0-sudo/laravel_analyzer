@@ -1,0 +1,44 @@
+name: Laravel CI
+
+# Триггеры: Запускать этот "рецепт" при push в ветку main
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  laravel-tests:
+
+    # На какой машине запускать:
+    runs-on: ubuntu-latest
+
+    # Шаги, которые нужно выполнить:
+    steps:
+      # 1. Шаг: Скачать твой код из репозитория
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Шаг: Настроить PHP (указываем версию)
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2' # Убедись, что версия совпадает с твоим Dockerfile
+
+      # 3. Шаг: Установить Composer (менеджер пакетов)
+      - name: Install Composer dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      # 4. Шаг: Подготовить .env файл
+      # Мы копируем .env.example, так как .env нет на GitHub
+      - name: Prepare .env file
+        run: cp .env.example .env
+
+      # 5. Шаг: Сгенерировать ключ Laravel
+      - name: Generate app key
+        run: php artisan key:generate
+
+      # 6. Шаг: Запустить тесты!
+      # (Мы используем --verbose, чтобы видеть ошибки)
+      - name: Run Tests
+        run: php artisan test --verbose
